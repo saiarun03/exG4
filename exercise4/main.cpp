@@ -20,6 +20,7 @@
 #include "cone.hpp"
 #include "cylinder.hpp"
 #include "loadobj.hpp"
+#include "box.hpp"
 
 
 
@@ -184,29 +185,75 @@ int main() try
 
 	// Create vertex buffers and VAO
 	//TODO: create VBOs and VAO
-	auto xcyl = make_cylinder(true, 16, {1.f, 0.f, 0.f}, make_scaling(5.f, 0.1f, 0.1f));
-	auto xcone = make_cone(true, 16, {0.f, 0.f, 0.f}, make_scaling(1.f, 0.3f, 0.3f) * make_translation({5.f, 0.f,  0.f}));
-	auto xarrow = concatenate(std::move(xcyl), xcone);
+	// auto xcyl = make_cylinder(true, 16, {1.f, 0.f, 0.f}, make_scaling(5.f, 0.1f, 0.1f));
+	// auto xcone = make_cone(true, 16, {0.f, 0.f, 0.f}, make_scaling(1.f, 0.3f, 0.3f) * make_translation({5.f, 0.f,  0.f}));
+	// auto xarrow = concatenate(std::move(xcyl), xcone);
 
-	// Create Y-axis arrow (green)
-	auto ycyl = make_cylinder(true, 16, {0.f, 1.f, 0.f}, make_rotation_z(std::numbers::pi_v<float> / 2.f) * make_scaling(5.f, 0.1f, 0.1f));
-	auto ycone = make_cone(true, 16, {0.f, 0.f, 0.f}, make_rotation_z(std::numbers::pi_v<float> / 2.f) * make_scaling(1.f, 0.3f, 0.3f) * make_translation({5.f, 0.f, 0.f}));
-	auto yarrow = concatenate(std::move(ycyl), ycone);
+	// // Create Y-axis arrow (green)
+	// auto ycyl = make_cylinder(true, 16, {0.f, 1.f, 0.f}, make_rotation_z(std::numbers::pi_v<float> / 2.f) * make_scaling(5.f, 0.1f, 0.1f));
+	// auto ycone = make_cone(true, 16, {0.f, 0.f, 0.f}, make_rotation_z(std::numbers::pi_v<float> / 2.f) * make_scaling(1.f, 0.3f, 0.3f) * make_translation({5.f, 0.f, 0.f}));
+	// auto yarrow = concatenate(std::move(ycyl), ycone);
 
-	// Create Z-axis arrow (blue)
-	auto zcyl = make_cylinder(true, 16, {0.f, 0.f, 1.f}, make_rotation_y(-std::numbers::pi_v<float> / 2.f) * make_scaling(5.f, 0.1f, 0.1f));
-	auto zcone = make_cone(true, 16, {0.f, 0.f, 0.f}, make_rotation_y(-std::numbers::pi_v<float> / 2.f) * make_scaling(1.f, 0.3f, 0.3f) * make_translation({5.f, 0.f, 0.f}));
-	auto zarrow = concatenate(std::move(zcyl), zcone);
+	// // Create Z-axis arrow (blue)
+	// auto zcyl = make_cylinder(true, 16, {0.f, 0.f, 1.f}, make_rotation_y(-std::numbers::pi_v<float> / 2.f) * make_scaling(5.f, 0.1f, 0.1f));
+	// auto zcone = make_cone(true, 16, {0.f, 0.f, 0.f}, make_rotation_y(-std::numbers::pi_v<float> / 2.f) * make_scaling(1.f, 0.3f, 0.3f) * make_translation({5.f, 0.f, 0.f}));
+	// auto zarrow = concatenate(std::move(zcyl), zcone);
 
-	// Merge all three arrows into a single mesh
-	auto allArrows = concatenate(std::move(xarrow), concatenate(std::move(yarrow), zarrow));
-	GLuint vao = create_vao(allArrows);
-	std::size_t vertexCount = allArrows.positions.size();
+	// // Merge all three arrows into a single mesh
+	// auto allArrows = concatenate(std::move(xarrow), concatenate(std::move(yarrow), zarrow));
+	// GLuint vao = create_vao(allArrows);
+	// std::size_t vertexCount = allArrows.positions.size();
 
-	auto armadillo = load_wavefront_obj("assets/ex4/Armadillo.obj");
-	auto armadilloarrow = concatenate(std::move(allArrows), armadillo);
-	GLuint armadillovao = create_vao(armadilloarrow);
-	std::size_t drawArmadillo = armadilloarrow.positions.size();
+	// auto armadillo = load_wavefront_obj("assets/ex4/Armadillo.obj");
+	// auto armadilloarrow = concatenate(std::move(allArrows), armadillo);
+	// GLuint armadillovao = create_vao(armadilloarrow);
+	// std::size_t drawArmadillo = armadilloarrow.positions.size();
+
+// Define parts of the rocket
+
+	// Red nose cone (still using the cone)
+	auto noseCone = make_cone(true, 16, {1.f, 0.f, 0.f}, // Red nose cone
+		make_scaling(0.4f, 0.8f, 0.4f) * make_translation({0.f, 1.4f, 0.f}));
+
+	// Green main body - replaced with a box instead of a cylinder
+	auto mainBody = make_box(true, 16, {0.f, 1.f, 0.f}, // Green main body
+		make_scaling(0.5f, 1.2f, 0.5f) * make_translation({0.f, 0.f, 0.f}));
+
+	// Red fins (still using cylinders)
+	auto fin1 = make_cylinder(true, 16, {1.f, 0.f, 0.f}, 
+		make_scaling(0.1f, 0.4f, 0.4f) * make_translation({0.4f, -0.8f, 0.f}));
+
+	auto fin2 = make_cylinder(true, 16, {1.f, 0.f, 0.f}, 
+		make_scaling(0.1f, 0.4f, 0.4f) * make_translation({-0.4f, -0.8f, 0.f}));
+
+	auto fin3 = make_cylinder(true, 16, {1.f, 0.f, 0.f}, 
+		make_scaling(0.1f, 0.4f, 0.4f) * make_translation({0.f, -0.8f, 0.4f}));
+
+	auto fin4 = make_cylinder(true, 16, {1.f, 0.f, 0.f}, 
+		make_scaling(0.1f, 0.4f, 0.4f) * make_translation({0.f, -0.8f, -0.4f}));
+
+	// White engine nozzle - still using a cylinder
+	auto engineNozzle = make_cylinder(true, 16, {1.f, 1.f, 1.f}, 
+		make_scaling(0.3f, 0.1f, 0.3f) * make_translation({0.f, -1.2f, 0.f}));
+
+	// Add additional box for the fuel section (e.g., a fuel tank)
+	auto fuelTank = make_box(true, 16, {0.f, 0.f, 1.f}, // Blue fuel tank
+		make_scaling(0.4f, 0.6f, 0.4f) * make_translation({0.f, -0.7f, 0.f}));
+
+	// Combine parts into a single rocket model
+	auto rocket = concatenate(std::move(noseCone), 
+		concatenate(std::move(mainBody), 
+			concatenate(std::move(fin1), 
+				concatenate(std::move(fin2), 
+					concatenate(std::move(fin3), 
+						concatenate(std::move(fin4), 
+							concatenate(std::move(engineNozzle), fuelTank)))))));
+
+	// Create VAO for the rocket
+	GLuint rocketVao = create_vao(rocket);
+	std::size_t rocketVertexCount = rocket.positions.size();
+
+
 	// Main loop
 	while( !glfwWindowShouldClose( window ) )
 	{
@@ -274,15 +321,15 @@ int main() try
 
 		static float const baseColor[] = {0.2f, 1.f, 1.f};
 		glUniform3fv(3, 1, baseColor);
-		glBindVertexArray( vao );
-		glBindVertexArray( armadillovao );
+		glBindVertexArray( rocketVao );
+		// glBindVertexArray( armadillovao );
 
 		glUniformMatrix4fv(0, 1, GL_TRUE, projCameraWorld.v);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		
 
-		glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-		glDrawArrays(GL_TRIANGLES, 0, drawArmadillo);
+		glDrawArrays(GL_TRIANGLES, 0, rocketVertexCount);
+		// glDrawArrays(GL_TRIANGLES, 0, drawArmadillo);
 		OGL_CHECKPOINT_DEBUG();
 
 		// Display results

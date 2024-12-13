@@ -5,7 +5,7 @@
  ../support/program.hpp ../support/checkpoint.hpp \
  ../support/debug_output.hpp ../vmlib/vec4.hpp ../vmlib/mat44.hpp \
  ../vmlib/vec3.hpp ../vmlib/vec4.hpp defaults.hpp cone.hpp \
- simple_mesh.hpp ../vmlib/vec3.hpp cylinder.hpp loadobj.hpp
+ simple_mesh.hpp ../vmlib/vec3.hpp cylinder.hpp loadobj.hpp box.hpp
 ../third_party/glad/include/glad/glad.h:
 ../third_party/glad/include/KHR/khrplatform.h:
 ../third_party/glfw/include/GLFW/glfw3.h:
@@ -23,3 +23,4 @@ simple_mesh.hpp:
 ../vmlib/vec3.hpp:
 cylinder.hpp:
 loadobj.hpp:
+box.hpp:
