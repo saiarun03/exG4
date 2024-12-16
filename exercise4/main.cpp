@@ -209,66 +209,93 @@ int main() try
 	// GLuint armadillovao = create_vao(armadilloarrow);
 	// std::size_t drawArmadillo = armadilloarrow.positions.size();
 
-	// Define parts of the rocket
+	// ------------------ Nose Cone (Red, rotated for asymmetry)
+	auto noseCone = make_cone(true, 16, {1.f, 0.f, 0.f},
+		make_scaling(0.4f, 0.8f, 0.4f) * make_translation({0.f, 2.5f, 0.f}) *
+		make_rotation_y(15.f));
 
-	// Red nose cone with slight rotation for asymmetry
-	auto noseCone = make_cone(true, 16, {1.f, 0.f, 0.f}, // Red nose cone
-		make_scaling(0.4f, 0.8f, 0.4f) * make_translation({0.f, 2.f, 0.f}) *
-		make_rotation_y(15.f));  // Rotate slightly on Y-axis
+	// ------------------ Main Body (Green Cylinder)
+	auto mainBody = make_cylinder(true, 16, {0.f, 1.f, 0.f},
+		make_scaling(0.5f, 1.8f, 0.5f) * make_translation({0.f, 0.f, 0.f}));
 
-	// Green main body (Cylinder)
-	auto mainBody = make_cylinder(true, 16, {0.f, 1.f, 0.f}, // Green main body
-		make_scaling(0.5f, 1.5f, 0.5f) * make_translation({0.f, 0.f, 0.f}));
+	// ------------------ Fuel Tank (Blue Box)
+	auto fuelTank = make_box(true, 16, {0.f, 0.f, 1.f},
+		make_scaling(0.4f, 0.6f, 0.4f) * make_translation({0.f, -1.5f, 0.f}));
 
-	// Blue fuel tank (Box, added for extra detail)
-	auto fuelTank = make_box(true, 16, {0.f, 0.f, 1.f}, // Blue fuel tank
-		make_scaling(0.5f, 0.8f, 0.5f) * make_translation({0.f, -1.3f, 0.f}));
+	// ------------------ Mini-Rockets (Cylinders + Cones on the side)
+	// Mini Rocket 1
+	auto miniRocketBody1 = make_cylinder(true, 16, {0.3f, 0.3f, 0.3f},
+		make_scaling(0.15f, 0.4f, 0.15f) * make_translation({0.6f, -0.5f, 0.6f}));
+	auto miniRocketCone1 = make_cone(true, 16, {1.f, 0.2f, 0.2f},
+		make_scaling(0.15f, 0.3f, 0.15f) * make_translation({0.6f, -0.8f, 0.6f}));
 
-	// Red fins (Boxes for better control surfaces, rotated for variety)
-	auto fin1 = make_box(true, 16, {1.f, 0.f, 0.f}, // Red fins
+	// Mini Rocket 2 (Opposite side)
+	auto miniRocketBody2 = make_cylinder(true, 16, {0.3f, 0.3f, 0.3f},
+		make_scaling(0.15f, 0.4f, 0.15f) * make_translation({-0.6f, -0.5f, 0.6f}));
+	auto miniRocketCone2 = make_cone(true, 16, {1.f, 0.2f, 0.2f},
+		make_scaling(0.15f, 0.3f, 0.15f) * make_translation({-0.6f, -0.8f, 0.6f}));
+
+	// Mini Rocket 3
+	auto miniRocketBody3 = make_cylinder(true, 16, {0.3f, 0.3f, 0.3f},
+		make_scaling(0.15f, 0.4f, 0.15f) * make_translation({0.6f, -0.5f, -0.6f}));
+	auto miniRocketCone3 = make_cone(true, 16, {1.f, 0.2f, 0.2f},
+		make_scaling(0.15f, 0.3f, 0.15f) * make_translation({0.6f, -0.8f, -0.6f}));
+
+	// Mini Rocket 4
+	auto miniRocketBody4 = make_cylinder(true, 16, {0.3f, 0.3f, 0.3f},
+		make_scaling(0.15f, 0.4f, 0.15f) * make_translation({-0.6f, -0.5f, -0.6f}));
+	auto miniRocketCone4 = make_cone(true, 16, {1.f, 0.2f, 0.2f},
+		make_scaling(0.15f, 0.3f, 0.15f) * make_translation({-0.6f, -0.8f, -0.6f}));
+
+	// ------------------ Fins (Rotated Boxes)
+	auto fin1 = make_box(true, 16, {1.f, 0.f, 0.f},
 		make_scaling(0.1f, 0.5f, 0.3f) * make_translation({0.4f, -1.8f, 0.3f}) *
-		make_rotation_y(30.f));  // Rotate around Y-axis for asymmetry
-
-	auto fin2 = make_box(true, 16, {1.f, 0.f, 0.f}, 
+		make_rotation_y(30.f));
+	auto fin2 = make_box(true, 16, {1.f, 0.f, 0.f},
 		make_scaling(0.1f, 0.5f, 0.3f) * make_translation({-0.4f, -1.8f, 0.3f}) *
-		make_rotation_y(-30.f));  // Rotate in opposite direction
-
-	auto fin3 = make_box(true, 16, {1.f, 0.f, 0.f}, 
+		make_rotation_y(-30.f));
+	auto fin3 = make_box(true, 16, {1.f, 0.f, 0.f},
 		make_scaling(0.1f, 0.5f, 0.3f) * make_translation({0.4f, -1.8f, -0.3f}) *
-		make_rotation_x(15.f));  // Slight rotation on X-axis
-
-	auto fin4 = make_box(true, 16, {1.f, 0.f, 0.f}, 
+		make_rotation_x(15.f));
+	auto fin4 = make_box(true, 16, {1.f, 0.f, 0.f},
 		make_scaling(0.1f, 0.5f, 0.3f) * make_translation({-0.4f, -1.8f, -0.3f}) *
-		make_rotation_x(-15.f));  // Slight rotation on X-axis
+		make_rotation_x(-15.f));
 
-	// Engine nozzle (Cylinder, in white, rotated downward)
-	auto engineNozzle = make_cylinder(true, 16, {1.f, 1.f, 1.f}, 
-		make_scaling(0.3f, 0.1f, 0.3f) * make_translation({0.f, -2.2f, 0.f}) *
-		make_rotation_x(-30.f));  // Rotate downward along X-axis
+	// ------------------ Engine Nozzle (White Cylinder)
+	auto engineNozzle = make_cylinder(true, 16, {1.f, 1.f, 1.f},
+		make_scaling(0.3f, 0.2f, 0.3f) * make_translation({0.f, -2.2f, 0.f}));
 
-	// Structural elements (Box for additional support, rotated for added detail)
-	auto structuralElement1 = make_box(true, 16, {0.5f, 0.5f, 0.5f}, // Gray structural piece
-		make_scaling(0.1f, 0.3f, 0.1f) * make_translation({0.3f, -0.3f, 0.f}) *
-		make_rotation_z(45.f));  // Rotate around Z-axis
+	// ------------------ Combine Rocket Parts
+	auto miniRocketsCombined = concatenate(
+		concatenate(concatenate(std::move(miniRocketBody1), miniRocketCone1),
+					concatenate(std::move(miniRocketBody2), miniRocketCone2)),
+		concatenate(concatenate(std::move(miniRocketBody3), miniRocketCone3),
+					concatenate(std::move(miniRocketBody4), miniRocketCone4)));
 
-	auto structuralElement2 = make_box(true, 16, {0.5f, 0.5f, 0.5f}, 
-		make_scaling(0.1f, 0.3f, 0.1f) * make_translation({-0.3f, -0.3f, 0.f}) *
-		make_rotation_z(-45.f));  // Rotate in opposite direction around Z-axis
+	auto finsCombined = concatenate(concatenate(std::move(fin1), fin2),
+		concatenate(std::move(fin3), fin4));
 
-	// Combine all parts into a single rocket model
-	auto rocket = concatenate(std::move(noseCone), 
-		concatenate(std::move(mainBody), 
-			concatenate(std::move(fuelTank), 
-				concatenate(std::move(fin1), 
-					concatenate(std::move(fin2), 
-						concatenate(std::move(fin3), 
-							concatenate(std::move(fin4), 
-								concatenate(std::move(engineNozzle), 
-									concatenate(std::move(structuralElement1), structuralElement2)))))))));
+	auto rocket = concatenate(
+    std::move(noseCone),
+    concatenate(
+        std::move(mainBody),
+        concatenate(
+            std::move(fuelTank),
+            concatenate(
+                std::move(miniRocketsCombined),
+                concatenate(
+                    std::move(finsCombined),
+                    std::move(engineNozzle) 
+                )
+            )
+        )
+    )
+);
 
-	// Create VAO for the rocket
+
 	GLuint rocketVao = create_vao(rocket);
 	std::size_t rocketVertexCount = rocket.positions.size();
+
 
 
 	// Main loop
